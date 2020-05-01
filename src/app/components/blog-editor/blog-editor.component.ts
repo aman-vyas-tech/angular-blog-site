@@ -4,6 +4,8 @@ import { Post } from 'src/app/models/post';
 import { DatePipe } from '@angular/common';
 import { BlogService } from 'src/app/services/blog.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-blog-editor',
@@ -17,16 +19,30 @@ export class BlogEditorComponent implements OnInit {
   postData = new Post();
   formTitle = 'Add';
   postId = '';
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
     private datePipe: DatePipe,
     private blogService: BlogService,
     private router: Router
-  ) {}
+  ) {
+    if (this.route.snapshot.params['id']) {
+      this.postId = this.route.snapshot.paramMap.get('id');
+    }
+  }
 
   ngOnInit(): void {
     this.setEditorConfig();
+    if (this.postId) {
+      this.formTitle = 'Edit';
+      this.blogService
+        .getPostbyId(this.postId)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe((result) => {
+          this.setPostFormData(result);
+        });
+    }
   }
 
   setEditorConfig() {
@@ -89,6 +105,11 @@ export class BlogEditorComponent implements OnInit {
     this.blogService.createPost(this.postData).then(() => {
       this.router.navigate(['/']);
     });
+  }
+
+  setPostFormData(postFormData) {
+    this.postData.title = postFormData.title;
+    this.postData.content = postFormData.content;
   }
 
   cancel() {

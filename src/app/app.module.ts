@@ -13,13 +13,18 @@ import { environment } from 'src/environments/environment';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { HomeComponent } from './components/home/home.component';
 import { BlogEditorComponent } from './components/blog-editor/blog-editor.component';
+import { ExcerptPipe } from './customPipes/excerpt.pipe';
+import { SlugPipe } from './customPipes/slug.pipe';
+import { BlogCardComponent } from './components/blog-card/blog-card.component';
+import { BlogComponent } from './components/blog/blog.component';
 
 
 const routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
+  { path: 'blog/:id/:slug', component: BlogComponent },
   { path: 'addpost', component: BlogEditorComponent },
-  { path: '**', component: HomeComponent },
-  
+  { path: 'editpost/:id', component: BlogEditorComponent },
+  { path: '**', component: HomeComponent }
 ];
 
 @NgModule({
@@ -27,7 +32,11 @@ const routes = [
     AppComponent,
     NavBarComponent,
     HomeComponent,
-    BlogEditorComponent
+    BlogEditorComponent,
+    ExcerptPipe,
+    SlugPipe,
+    BlogCardComponent,
+    BlogComponent
   ],
   imports: [
     BrowserModule,
