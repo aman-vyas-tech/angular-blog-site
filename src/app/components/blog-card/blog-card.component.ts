@@ -5,6 +5,9 @@ import { Post } from 'src/app/models/post';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from 'src/app/services/snackbar.service';
+import { ActivatedRoute } from '@angular/router';
+import { AppUser } from 'src/app/models/appuser';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-blog-card',
@@ -14,13 +17,30 @@ import { SnackbarService } from 'src/app/services/snackbar.service';
 export class BlogCardComponent implements OnInit {
   blogPost: Post[] = [];
   private unsubscribe$ = new Subject<void>();
+  config: any;
+  pageSizeOptions = [];
+  appUser: AppUser;
+
   constructor(
     private blogService: BlogService,
-    private snackBarService: SnackbarService
-  ) {}
+    private snackBarService: SnackbarService,
+    private route: ActivatedRoute,
+    private authService: AuthService
+  ) {
+    this.pageSizeOptions = [2, 4, 6];
+    const pageSize = localStorage.getItem('pageSize');
+    this.config = {
+      currentPage: 1,
+      itemsPerPage: pageSize ? +pageSize : this.pageSizeOptions[0],
+    };
+  }
 
   ngOnInit() {
-    this.getBlogPosts();
+    this.route.params.subscribe((params) => {
+      this.config.currentPage = +params['pagenum'];
+      this.getBlogPosts();
+    });
+    this.authService.appUser$.subscribe(appUser => this.appUser = appUser);
   }
   getBlogPosts() {
     this.blogService
