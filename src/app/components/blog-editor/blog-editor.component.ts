@@ -98,13 +98,19 @@ export class BlogEditorComponent implements OnInit {
   }
 
   saveBlogPost() {
-    this.postData.createdDate = this.datePipe.transform(
-      Date.now(),
-      'MMdd-yyyy HH:mm'
-    );
-    this.blogService.createPost(this.postData).then(() => {
-      this.router.navigate(['/']);
-    });
+    if (this.postId) {
+      this.blogService.updatePost(this.postId, this.postData).then(() => {
+        this.router.navigate(['/']);
+      });
+    } else {
+      this.postData.createdDate = this.datePipe.transform(
+        Date.now(),
+        'MMdd-yyyy HH:mm'
+      );
+      this.blogService.createPost(this.postData).then(() => {
+        this.router.navigate(['/']);
+      });
+    }
   }
 
   setPostFormData(postFormData) {
@@ -114,5 +120,10 @@ export class BlogEditorComponent implements OnInit {
 
   cancel() {
     this.router.navigate(['/']);
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
