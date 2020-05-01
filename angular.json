@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "angular-blog-site"
+    }
+  },
+  "defaultProject": "angular-blog-site",
+  "cli": {
+    "analytics": "5cc3ada7-342b-4940-9fad-fa3bf1c47976"
+  }
 }
