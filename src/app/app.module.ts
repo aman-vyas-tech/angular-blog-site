@@ -26,6 +26,7 @@ import { AdminAuthGuard } from './guards/admin-auth.guard';
 import { AuthorProfileComponent } from './components/author-profile/author-profile.component';
 import { ScrollerComponent } from './components/scroller/scroller.component';
 import { CommentsComponent } from './components/comments/comments.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 const routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -63,6 +64,7 @@ const routes = [
     FormsModule,
     CKEditorModule,
     NgxPaginationModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [],
   bootstrap: [AppComponent],
